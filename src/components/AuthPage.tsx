@@ -56,13 +56,12 @@ function AuthPage({ mode }: AuthPageProps) {
   return (
     <main className="auth-page">
       <header className="auth-header">
-        <Link to="/" className="auth-logo">
-          <span className="auth-logo-icon">
-            <Vault size={22} weight="fill" />
-          </span>
-
-          <span>BudgetBuddy</span>
-        </Link>
+         <a href="/" className="logo">
+                 <span className="auth-logo-icon">
+                   <Vault size={22} weight="fill" />
+                 </span>
+                 BudgetBuddy
+        </a>
 
         <p className="header-switch">
           {isRegister

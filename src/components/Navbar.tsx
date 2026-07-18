@@ -1,20 +1,19 @@
 import React from 'react'
 import '../styles/landing.css'
+import {
+
+  Vault,
+} from "@phosphor-icons/react";
 
 function Navbar() {
   return (
      <header className="navbar">
         <a href="/" className="logo">
-          <span className="logo-icon">◉</span>
+          <span className="auth-logo-icon">
+            <Vault size={22} weight="fill" />
+          </span>
           BudgetBuddy
         </a>
-
-        <nav className="nav-links">
-          <a href="#features">Features</a>
-          <a href="#about">About</a>
-          <a href="#how-it-works">How It Works</a>
-          <a href="#pricing">Pricing</a>
-        </nav>
 
         <div className="nav-actions">
           <a href="/login" className="login-link">
