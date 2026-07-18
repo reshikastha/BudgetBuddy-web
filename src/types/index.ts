@@ -36,6 +36,9 @@ export type AccountOptionType = {
   routeName?: string;
 };
 
+// Landing page 
+
+
 /* ---------- Typography ---------- */
 
 export type TypoProps = {
