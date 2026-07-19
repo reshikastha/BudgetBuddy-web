@@ -1,0 +1,405 @@
+:root {
+  --transaction-background: #101211;
+  --transaction-card: #242725;
+  --transaction-input: #1a1d1b;
+  --transaction-border: rgba(255, 255, 255, 0.14);
+  --transaction-text: #ffffff;
+  --transaction-muted: #969996;
+  --transaction-purple: #8b5cf6;
+  --transaction-purple-dark: #6d28d9;
+  --transaction-red: #ef4444;
+  --transaction-green: #84cc16;
+}
+
+* {
+  box-sizing: border-box;
+}
+.new-transaction{
+     width: calc(100% - 250px);
+  margin-left: 250px;
+  padding: 50px;
+}
+.new-transaction-page {
+  min-height: 100vh;
+  padding: 30px;
+  color: var(--transaction-text);
+  background:
+    radial-gradient(
+      circle at 50% 0,
+      rgba(139, 92, 246, 0.07),
+      transparent 400px
+    ),
+    var(--transaction-background);
+}
+
+.transaction-page-container {
+  width: 100%;
+  max-width: 1050px;
+  margin: 0 auto;
+}
+
+.transaction-breadcrumb {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 22px;
+  color: var(--transaction-muted);
+  font-size: 11px;
+}
+
+.transaction-breadcrumb button {
+  padding: 0;
+  color: var(--transaction-muted);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.transaction-breadcrumb button:hover {
+  color: var(--transaction-purple);
+}
+
+.transaction-breadcrumb span {
+  color: #d3d5d3;
+}
+
+.transaction-page-header h1 {
+  margin: 0;
+  font-size: 27px;
+  letter-spacing: -0.04em;
+}
+
+.transaction-page-header p {
+  margin: 9px 0 0;
+  color: var(--transaction-muted);
+  font-size: 12px;
+}
+
+/* Form */
+
+.new-transaction-form {
+  margin-top: 30px;
+  padding: 30px;
+  border: 1px solid var(--transaction-border);
+  border-radius: 14px;
+  background: linear-gradient(
+    145deg,
+    #282b29,
+    #202321
+  );
+  box-shadow: 0 25px 55px rgba(0, 0, 0, 0.2);
+}
+
+.transaction-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 55px;
+}
+
+.transaction-left-column,
+.transaction-right-column {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.transaction-field {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.transaction-field > span {
+  color: #dadcda;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.transaction-field > span small {
+  color: var(--transaction-muted);
+  font-size: 10px;
+  font-weight: 400;
+}
+
+/* Inputs */
+
+.select-wrapper,
+.amount-input-wrapper,
+.date-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.transaction-field input,
+.transaction-field select,
+.transaction-field textarea {
+  width: 100%;
+  color: white;
+  border: 1px solid var(--transaction-border);
+  border-radius: 8px;
+  outline: none;
+  background: var(--transaction-input);
+  font-size: 12px;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.transaction-field input,
+.transaction-field select {
+  min-height: 48px;
+  padding: 0 14px;
+}
+
+.transaction-field select {
+  padding-right: 42px;
+  appearance: none;
+  cursor: pointer;
+}
+
+.transaction-field input::placeholder,
+.transaction-field textarea::placeholder {
+  color: #747774;
+}
+
+.transaction-field input:focus,
+.transaction-field select:focus,
+.transaction-field textarea:focus {
+  border-color: var(--transaction-purple);
+  box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1);
+}
+
+.select-wrapper:has(.transaction-type-icon) select {
+  padding-left: 43px;
+}
+
+.transaction-type-icon {
+  position: absolute;
+  left: 13px;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+
+.expense-type-icon {
+  color: var(--transaction-red);
+}
+
+.income-type-icon {
+  color: var(--transaction-green);
+}
+
+.select-arrow {
+  position: absolute;
+  right: 14px;
+  color: var(--transaction-muted);
+  pointer-events: none;
+}
+
+.amount-input-wrapper input {
+  padding-right: 42px;
+}
+
+.currency-symbol {
+  position: absolute;
+  right: 15px;
+  color: white;
+  font-size: 13px;
+}
+
+.date-input-wrapper input {
+  color-scheme: dark;
+  padding-right: 42px;
+}
+
+.date-icon {
+  position: absolute;
+  right: 14px;
+  color: var(--transaction-muted);
+  pointer-events: none;
+}
+
+.date-input-wrapper input::-webkit-calendar-picker-indicator {
+  position: absolute;
+  right: 12px;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* Description */
+
+.description-field {
+  flex: 1;
+}
+
+.textarea-wrapper {
+  position: relative;
+  display: flex;
+  flex: 1;
+}
+
+.transaction-field textarea {
+  min-height: 230px;
+  padding: 15px;
+  padding-bottom: 35px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.character-counter {
+  position: absolute;
+  right: 13px;
+  bottom: 11px;
+  color: var(--transaction-muted);
+  font-size: 9px;
+}
+
+/* Actions */
+
+.transaction-form-message {
+  min-height: 17px;
+  margin: 14px 0 0;
+  color: var(--transaction-green);
+  text-align: right;
+  font-size: 11px;
+}
+
+.transaction-form-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: flex-end;
+  margin-top: 15px;
+}
+
+.transaction-cancel-button,
+.transaction-submit-button {
+  min-width: 135px;
+  min-height: 46px;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  color:black;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+.receipt-field {
+  margin-top: 2px;
+}
+
+.receipt-upload-area {
+  min-height: 120px;
+  padding: 14px;
+  overflow: hidden;
+  border: 1px dashed rgba(255, 255, 255, 0.25);
+  border-radius: 9px;
+  background: rgba(24, 27, 25, 0.6);
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.receipt-upload-area:hover {
+  border-color: var(--transaction-purple);
+  background: rgba(139, 92, 246, 0.07);
+}
+
+.receipt-upload-placeholder {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  min-height: 90px;
+}
+
+.receipt-upload-icon {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  place-items: center;
+  color: #c4b5fd;
+  border-radius: 12px;
+  background: rgba(139, 92, 246, 0.15);
+}
+
+.receipt-upload-placeholder strong {
+  font-size: 12px;
+}
+
+.receipt-upload-placeholder p {
+  margin: 7px 0 0;
+  color: var(--transaction-muted);
+  font-size: 10px;
+}
+
+.hidden-receipt-input {
+  display: none;
+}
+
+/* Preview */
+
+.receipt-preview-container {
+  position: relative;
+}
+
+.receipt-preview-image {
+  display: block;
+  width: 100%;
+  height: 155px;
+  object-fit: contain;
+  border-radius: 7px;
+  background: #111311;
+}
+
+.remove-receipt-button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: grid;
+  width: 29px;
+  height: 29px;
+  place-items: center;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  background: rgba(239, 68, 68, 0.9);
+  cursor: pointer;
+}
+
+.receipt-file-information {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: 12px;
+  color: #c4b5fd;
+}
+
+.receipt-file-information div {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.receipt-file-information strong {
+  overflow: hidden;
+  color: white;
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.receipt-file-information span {
+  color: var(--transaction-muted);
+  font-size: 9px;
+}
+
+.receipt-error {
+  color: var(--transaction-red) !important;
+  font-size: 10px !important;
+}

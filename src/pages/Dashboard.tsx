@@ -35,7 +35,7 @@ import type {
 
 import "../styles/dashboard.css";
 import SidebarNav from "../components/SidebarNav";
-
+import { useNavigate } from "react-router-dom";
 
 const transactions: Transaction[] = [
   {
@@ -144,6 +144,7 @@ function formatCurrency(amount: number): string {
 }
 
 function Dashboard() {
+    const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
 
   return (
@@ -360,7 +361,7 @@ function Dashboard() {
         </section>
       </main>
 
-      <button className="floating-button" aria-label="Add transaction">
+      <button className="floating-button" aria-label="Add transaction"  onClick={() => navigate("/newTransaction")}>
         <Plus size={28} />
       </button>
     </div>

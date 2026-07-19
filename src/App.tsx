@@ -7,6 +7,8 @@ import Dashboard from "./pages/Dashboard";
 import Statistics from "./pages/Statistics";
 import Wallets from "./pages/Wallet";
 import NewWallet from "./pages/NewWallet";
+import Transactions from "./pages/Transactions";
+import NewTransaction from "./pages/newTransaction";
 
 function App() {
   return (
@@ -19,7 +21,8 @@ function App() {
         <Route path="/statistics" element={<Statistics />} />
         <Route path="/wallet" element={<Wallets />} />
         <Route path="/newWallet" element={<NewWallet />} />
-        
+        <Route path="/transactions" element={<Transactions />} />
+         <Route path="/newTransaction" element={<NewTransaction />} />
       </Routes>
     </BrowserRouter>
   );
