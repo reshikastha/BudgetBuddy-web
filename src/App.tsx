@@ -9,6 +9,8 @@ import Wallets from "./pages/Wallet";
 import NewWallet from "./pages/NewWallet";
 import Transactions from "./pages/Transactions";
 import NewTransaction from "./pages/newTransaction";
+import Profile from "./pages/Profile";
+import EditProfile from "./pages/EditProfile";
 
 function App() {
   return (
@@ -23,6 +25,8 @@ function App() {
         <Route path="/newWallet" element={<NewWallet />} />
         <Route path="/transactions" element={<Transactions />} />
          <Route path="/newTransaction" element={<NewTransaction />} />
+         <Route path="/profile" element={<Profile />} />
+        <Route path="/editProfile" element={<EditProfile />} />
       </Routes>
     </BrowserRouter>
   );

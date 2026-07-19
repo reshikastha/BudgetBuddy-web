@@ -24,9 +24,7 @@ function SidebarNav() {
       { label: "Statistics", icon: ChartBar ,  link:'/statistics'},
       { label: "Wallets", icon: Wallet ,  link:'/wallet' },
       { label: "Transactions", icon: Receipt,  link:'/transactions' },
-   
       { label: "Profile", icon: User,  link:'/profile' },
-      { label: "Settings", icon: Gear , link:'/settings'},
     ];
     
      const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
