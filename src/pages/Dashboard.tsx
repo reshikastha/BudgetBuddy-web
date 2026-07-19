@@ -34,16 +34,8 @@ import type {
 } from "../types/dashboard";
 
 import "../styles/dashboard.css";
+import SidebarNav from "../components/SidebarNav";
 
-const sidebarItems: SidebarItem[] = [
-  { label: "Dashboard", icon: SquaresFour, active: true },
-  { label: "Statistics", icon: ChartBar },
-  { label: "Wallets", icon: Wallet },
-  { label: "Transactions", icon: Receipt },
-  { label: "Budgets", icon: PiggyBank },
-  { label: "Profile", icon: User },
-  { label: "Settings", icon: Gear },
-];
 
 const transactions: Transaction[] = [
   {
@@ -156,54 +148,8 @@ function Dashboard() {
 
   return (
     <div className="dashboard-layout">
-      {sidebarOpen && (
-        <button
-          className="sidebar-overlay"
-          onClick={() => setSidebarOpen(false)}
-          aria-label="Close navigation"
-        />
-      )}
-
-      <aside className={`sidebar ${sidebarOpen ? "sidebar-open" : ""}`}>
-        <div className="sidebar-logo">
-          <div className="logo-symbol">
-            <Money size={22} weight="fill" />
-          </div>
-
-          <span>BudgetBuddy</span>
-
-          <button
-            className="sidebar-close"
-            onClick={() => setSidebarOpen(false)}
-            aria-label="Close sidebar"
-          >
-            <X size={20} />
-          </button>
-        </div>
-
-        <nav className="sidebar-navigation">
-          {sidebarItems.map((item) => {
-            const SidebarIcon = item.icon;
-
-            return (
-              <button
-                className={`sidebar-item ${
-                  item.active ? "sidebar-item-active" : ""
-                }`}
-                key={item.label}
-              >
-                <SidebarIcon size={19} weight="duotone" />
-                <span>{item.label}</span>
-              </button>
-            );
-          })}
-        </nav>
-
-        <button className="logout-button">
-          <SignOut size={20} />
-          <span>Logout</span>
-        </button>
-      </aside>
+      
+      <SidebarNav/>
 
       <main className="dashboard-main">
         <header className="dashboard-header">

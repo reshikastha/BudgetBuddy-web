@@ -4,6 +4,7 @@ export type SidebarItem = {
   label: string;
   icon: Icon;
   active?: boolean;
+  link: string;
 };
 
 export type Transaction = {
