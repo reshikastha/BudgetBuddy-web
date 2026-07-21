@@ -14,7 +14,7 @@ import EditProfile from "./pages/EditProfile";
 
 function App() {
   return (
-    <BrowserRouter>
+
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
@@ -28,7 +28,7 @@ function App() {
          <Route path="/profile" element={<Profile />} />
         <Route path="/editProfile" element={<EditProfile />} />
       </Routes>
-    </BrowserRouter>
+
   );
 }
 

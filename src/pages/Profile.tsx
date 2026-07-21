@@ -36,14 +36,14 @@ const profileOptions: ProfileOption[] = [
   {
     title: "Settings",
     description: "Manage your preferences",
-    route: "/settings",
+    route: "/profile",
     icon: Gear,
     color: "#10b981",
   },
   {
     title: "Privacy Policy",
     description: "Read our privacy policy",
-    route: "/privacy",
+    route: "/profile",
     icon: LockKey,
     color: "#64748b",
   },

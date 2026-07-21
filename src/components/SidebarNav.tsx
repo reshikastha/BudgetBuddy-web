@@ -15,10 +15,14 @@ import type {
   SidebarItem,
 } from "../types/dashboard";
 import '../styles/dashboard.css'
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from '../context/AuthContext';
 
 function SidebarNav() {
     const navigate = useNavigate();
+      const location = useLocation();
+  const { logout } = useAuth();
+
     const sidebarItems: SidebarItem[] = [
       { label: "Dashboard", icon: SquaresFour, active: true, link:'/dashboard' },
       { label: "Statistics", icon: ChartBar ,  link:'/statistics'},
@@ -28,6 +32,46 @@ function SidebarNav() {
     ];
     
      const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
+      const [loggingOut, setLoggingOut] =
+    useState<boolean>(false);
+
+  const [logoutError, setLogoutError] =
+    useState<string>("");
+
+  function handleNavigation(link: string): void {
+    navigate(link);
+    setSidebarOpen(false);
+  }
+
+
+  async function handleLogout(): Promise<void> {
+    const confirmed = window.confirm(
+      "Are you sure you want to log out?",
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    setLoggingOut(true);
+    setLogoutError("");
+
+    const response = await logout();
+
+    setLoggingOut(false);
+
+    if (!response.success) {
+      setLogoutError(
+        response.message ?? "Unable to log out.",
+      );
+
+      return;
+    }
+
+    navigate("/login", {
+      replace: true,
+    });
+  }
   return (
     <div>
         {sidebarOpen && (
@@ -58,11 +102,14 @@ function SidebarNav() {
             <nav className="sidebar-navigation">
               {sidebarItems.map((item) => {
                 const SidebarIcon = item.icon;
-    
+
+             const isActive =
+              location.pathname === item.link ||
+              location.pathname.startsWith(`${item.link}/`);
                 return (
                   <button
                     className={`sidebar-item ${
-                      item.active ? "sidebar-item-active" : ""
+                            isActive ? "sidebar-item-active" : ""
                     }`}
                     key={item.label}
                     onClick={() => navigate(item.link)}
@@ -74,10 +121,18 @@ function SidebarNav() {
               })}
             </nav>
     
-            <button className="logout-button">
-              <SignOut size={20} />
-              <span>Logout</span>
-            </button>
+              <button
+                type="button"
+                className="logout-button"
+                onClick={handleLogout}
+                disabled={loggingOut}
+              >
+                <SignOut size={20} />
+
+                <span>
+                  {loggingOut ? "Logging out..." : "Logout"}
+                </span>
+              </button>
           </aside></div>
   )
 }
