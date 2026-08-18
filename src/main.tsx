@@ -4,6 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 
 import App from "./App";
 import { AuthProvider } from "./context/AuthContext";
+import { FinanceProvider } from "./context/FinanceContext";
 
 import "./index.css";
 
@@ -13,7 +14,9 @@ ReactDOM.createRoot(
   <React.StrictMode>
     <BrowserRouter>
       <AuthProvider>
-        <App />
+        <FinanceProvider>
+          <App />
+        </FinanceProvider>
       </AuthProvider>
     </BrowserRouter>
   </React.StrictMode>,

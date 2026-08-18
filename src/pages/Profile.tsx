@@ -6,9 +6,13 @@ import {
   SignOut,
   User,
 } from "@phosphor-icons/react";
-
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import { onAuthStateChanged, signOut } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
+
+import { auth, firestore } from "../config/firebase";
 import type {
   ProfileOption,
   UserProfile,
@@ -17,11 +21,12 @@ import type {
 import "../styles/Profile.css";
 import SidebarNav from "../components/SidebarNav";
 
-const user: UserProfile = {
-  name: "Reshika",
-  email: "reshika@gmail.com",
-  phone: "+61 400 123 456",
-  location: "Adelaide, South Australia",
+const emptyProfile: UserProfile = {
+  
+  name: "",
+  email: "",
+  phone: "",
+  location: "",
   image: "",
 };
 
@@ -51,6 +56,97 @@ const profileOptions: ProfileOption[] = [
 
 function Profile() {
   const navigate = useNavigate();
+
+
+  const [profile, setProfile] =
+    useState<UserProfile>(emptyProfile);
+
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>("");
+  const [loggingOut, setLoggingOut] =
+    useState<boolean>(false);
+
+  /*
+   * Retrieve the logged-in user's profile from Firestore.
+   */
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(
+      auth,
+      async (firebaseUser) => {
+        if (!firebaseUser) {
+          navigate("/login", { replace: true });
+          return;
+        }
+
+        try {
+          setLoading(true);
+          setError("");
+
+          const userReference = doc(
+            firestore,
+            "users",
+            firebaseUser.uid,
+          );
+
+          const userSnapshot = await getDoc(userReference);
+
+          if (userSnapshot.exists()) {
+            const data = userSnapshot.data();
+
+            /*
+             * Do not use old Expo file:// image paths.
+             * React web requires an HTTP/HTTPS image URL.
+             */
+            const validImage =
+              typeof data.image === "string" &&
+              (data.image.startsWith("https://") ||
+                data.image.startsWith("http://"))
+                ? data.image
+                : "";
+
+            setProfile({
+              name:
+                typeof data.name === "string"
+                  ? data.name
+                  : firebaseUser.displayName ?? "User",
+              email:
+                typeof data.email === "string"
+                  ? data.email
+                  : firebaseUser.email ?? "",
+              phone:
+                typeof data.phone === "string"
+                  ? data.phone
+                  : "",
+              location:
+                typeof data.location === "string"
+                  ? data.location
+                  : "",
+              image: validImage,
+            });
+          } else {
+            setProfile({
+              name: firebaseUser.displayName ?? "User",
+              email: firebaseUser.email ?? "",
+              phone: "",
+              location: "",
+              image: firebaseUser.photoURL ?? "",
+            });
+          }
+        } catch (profileError) {
+          console.error(
+            "Error retrieving profile:",
+            profileError,
+          );
+
+          setError("Unable to load your profile.");
+        } finally {
+          setLoading(false);
+        }
+      },
+    );
+
+    return unsubscribe;
+  }, [navigate]);
 
   function handleLogout(): void {
     const confirmed = window.confirm(
@@ -89,15 +185,34 @@ function Profile() {
         <section className="profile-layout">
           <article className="profile-user-card">
             <div className="profile-avatar">
-              {user.image ? (
-                <img src={user.image} alt={user.name} />
-              ) : (
-                <User size={75} weight="fill" />
-              )}
+              {profile.image ? (
+                  <img
+                    src={profile.image}
+                    alt={`${profile.name}'s profile`}
+                    onError={(event) => {
+                      event.currentTarget.style.display = "none";
+                    }}
+                  />
+                ) : (
+                  <User size={75} weight="fill" />
+                )}
             </div>
 
-            <h2>{user.name}</h2>
-            <p>{user.email}</p>
+             <h2>{profile.name || "User"}</h2>
+              <p>{profile.email}</p>
+
+              {profile.phone && (
+                <p className="profile-extra-detail">
+                  {profile.phone}
+                </p>
+              )}
+
+              {profile.location && (
+                <p className="profile-extra-detail">
+                  {profile.location}
+                </p>
+              )}
+
 
             <button
               type="button"

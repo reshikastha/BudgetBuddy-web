@@ -14,10 +14,11 @@ export type TransactionCategory =
   | "Others";
 
 export type Transaction = {
-  id: number;
+  id?: string | number;
   title: string;
   description: string;
   category: TransactionCategory;
+walletId?: string;
   wallet: string;
   type: TransactionKind;
   amount: number;

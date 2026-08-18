@@ -104,7 +104,7 @@ export const expenseCategories = {
 
 export const incomeCategory = {
   label: "Income",
-  value: "income",
+  value: "Income",
   icon: CurrencyDollarSimple,
   bgColor: colors.green,
 };
@@ -116,6 +116,6 @@ export const transactionTypes = [
   },
   {
     label: "Income",
-    value: "income",
+    value: "Income",
   },
 ];

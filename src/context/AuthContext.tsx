@@ -89,6 +89,8 @@ export function AuthProvider({
             auth.currentUser?.displayName ??
             null,
           image: data.image ?? null,
+          location: data.location ?? null,
+          phone: data.phone ?? auth.currentUser?.phoneNumber?? null
         });
 
         return;
@@ -105,6 +107,9 @@ export function AuthProvider({
           email: firebaseUser.email,
           name: firebaseUser.displayName,
           image: firebaseUser.photoURL,
+          location: null,
+          phone: firebaseUser.phoneNumber,
+
         });
       }
     } catch (error) {
@@ -123,6 +128,8 @@ export function AuthProvider({
               email: firebaseUser.email,
               name: firebaseUser.displayName,
               image: firebaseUser.photoURL,
+              location: null,
+              phone: firebaseUser.phoneNumber,
             });
 
             await updateUserData(firebaseUser.uid);
@@ -181,6 +188,8 @@ export function AuthProvider({
         email: credential.user.email,
         name: name.trim(),
         image: null,
+        location: null,
+        phone: null,
       };
 
       await setDoc(

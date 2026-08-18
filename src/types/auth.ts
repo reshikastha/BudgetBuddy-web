@@ -9,6 +9,8 @@ export type UserType = {
   email: string | null;
   name: string | null;
   image: string | null;
+  phone?: string | null;
+  location?: string | null;
 };
 
 export type AuthResponse = {

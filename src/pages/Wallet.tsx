@@ -4,6 +4,7 @@ import {
   Plus,
   RocketLaunch,
   TrendUp,
+  WalletIcon,
 } from "@phosphor-icons/react";
 
 import type { WalletType } from "../types/finance";
@@ -76,7 +77,7 @@ function Wallets() {
                     backgroundColor: wallet.color,
                   }}
                 >
-                  <WalletIcon size={25} weight="fill" />
+                  {/* <WalletIcon size={25} weight="fill" /> */}
                 </div>
 
                 <button aria-label={`Open ${wallet.name}`}>

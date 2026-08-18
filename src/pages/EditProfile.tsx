@@ -18,44 +18,143 @@ import {
 
 import { useNavigate } from "react-router-dom";
 
-import type { UserProfile } from "../types/profile";
+import type { UserProfile, ProfileFormData } from "../types/profile";
+
+import { useAuth } from "../context/AuthContext";
+
+import {
+  getUserProfile,
+  saveUserProfile,
+} from "../service/profileService";
 
 import "../styles/Profile.css";
 import SidebarNav from "../components/SidebarNav";
 
-const initialProfile: UserProfile = {
-  name: "Reshika",
-  email: "reshika@gmail.com",
-  phone: "+61 400 123 456",
-  location: "Adelaide, South Australia",
+
+const emptyForm: ProfileFormData = {
+  name: "",
+  email: "",
+  phone: "",
+  location: "",
   image: "",
 };
+
+function canDisplayStoredImage(image: string): boolean {
+  return (
+    image.startsWith("https://") ||
+    image.startsWith("http://")
+  );
+}
 
 function EditProfile() {
   const navigate = useNavigate();
   const imageInputRef = useRef<HTMLInputElement>(null);
 
+
+   const { user, loading: authLoading, updateUserData } =
+    useAuth();
+
+  const [formData, setFormData] =
+    useState<ProfileFormData>(emptyForm);
   const [profile, setProfile] =
-    useState<UserProfile>(initialProfile);
+    useState<UserProfile>(emptyForm);
 
   const [selectedImage, setSelectedImage] =
     useState<File | null>(null);
 
   const [imagePreview, setImagePreview] =
-    useState<string>(initialProfile.image);
+    useState<string>(emptyForm.image);
+
+  const [loadingProfile, setLoadingProfile] =
+    useState<boolean>(true);
+
+  const [saving, setSaving] =
+    useState<boolean>(false);
 
   const [message, setMessage] = useState<string>("");
   const [error, setError] = useState<string>("");
 
+
+
+  useEffect(() => {
+    if (authLoading) {
+      return;
+    }
+
+    if (!user?.uid) {
+      navigate("/login", {
+        replace: true,
+      });
+
+      return;
+    }
+
+    async function loadProfile(): Promise<void> {
+      try {
+        setLoadingProfile(true);
+        setError("");
+
+        const profile = await getUserProfile(user!.uid);
+
+        if (!profile) {
+          setError("Your profile document was not found.");
+          return;
+        }
+
+        setFormData({
+          name: profile?.name,
+          email: profile?.email,
+          phone: profile?.phone,
+          location: profile?.location,
+          image: canDisplayStoredImage(profile?.image)
+            ? profile?.image
+            : "",
+        });
+
+        /*
+         * A file:/// image saved by Expo cannot be displayed
+         * in the website, so it is intentionally ignored.
+         */
+
+        setImagePreview(
+          canDisplayStoredImage(profile.image)
+            ? profile.image
+            : "",
+        );
+      } catch (loadError) {
+        console.error("Profile retrieval error:", loadError);
+
+        setError(
+          "Unable to retrieve your profile. Please try again.",
+        );
+      } finally {
+        setLoadingProfile(false);
+      }
+    }
+
+    void loadProfile();
+  }, [authLoading, user?.uid, navigate]);
+
+  useEffect(() => {
+    return () => {
+      if (imagePreview.startsWith("blob:")) {
+        URL.revokeObjectURL(imagePreview);
+      }
+    };
+  }, [imagePreview]);
+
   function updateProfile(
     field: keyof UserProfile,
-    value: string,
-  ): void {
-    setProfile((currentProfile) => ({
-      ...currentProfile,
-      [field]: value,
-    }));
-  }
+  value: string,
+): void {
+  setProfile((currentProfile) => ({
+    ...currentProfile,
+    [field]: value,
+  }));
+
+  setMessage("");
+  setError("");
+}
 
   function handleImageChange(
     event: ChangeEvent<HTMLInputElement>,
@@ -89,6 +188,7 @@ function EditProfile() {
     setSelectedImage(file);
     setImagePreview(URL.createObjectURL(file));
     setError("");
+    setMessage("");
   }
 
   function removeImage(): void {
@@ -97,34 +197,70 @@ function EditProfile() {
     }
 
     setSelectedImage(null);
-    setImagePreview("");
+     setImagePreview(formData.image);
 
     if (imageInputRef.current) {
       imageInputRef.current.value = "";
     }
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>): void {
-    event.preventDefault();
+  async function handleSubmit(event: FormEvent<HTMLFormElement>): Promise<void> {
+     event.preventDefault();
 
-    if (!profile.name.trim()) {
-      setError("Please enter your name.");
+    if (!user?.uid) {
+      setError("You must be logged in.");
       return;
     }
 
-    if (!profile.email.trim()) {
-      setError("Please enter your email.");
+    if (formData.name.trim().length < 2) {
+      setError("Please enter your full name.");
       return;
     }
 
-    console.log({
-      profile,
-      selectedImage,
-    });
+    try {
+      setSaving(true);
+      setError("");
+      setMessage("");
 
-    setError("");
-    setMessage("Your profile has been updated successfully.");
+      const updatedProfile: UserProfile =
+        await saveUserProfile({
+          uid: user.uid,
+          formData,
+          newImage: selectedImage,
+        });
+
+      setFormData({
+        name: updatedProfile.name,
+        email: updatedProfile.email,
+        phone: updatedProfile.phone,
+        location: updatedProfile.location,
+        image: updatedProfile.image,
+      });
+
+      setSelectedImage(null);
+      setImagePreview(updatedProfile.image);
+
+      /*
+       * Refresh the user stored in AuthContext.
+       */
+
+      await updateUserData(user.uid);
+
+      setMessage("Your profile was updated successfully.");
+      navigate("/profile");
+     
+    } catch (saveError) {
+      console.error("Profile update error:", saveError);
+
+      setError(
+        "Unable to update your profile. Please try again.",
+      );
+    } finally {
+      setSaving(false);
+    }
   }
+
+console.log({message})
 
   useEffect(() => {
     return () => {
@@ -166,13 +302,13 @@ function EditProfile() {
               {imagePreview ? (
                 <img
                   src={imagePreview}
-                  alt="Profile preview"
+                  alt={`${formData.name || "User"} profile`}
                 />
               ) : (
                 <User size={74} weight="fill" />
               )}
 
-              {imagePreview && (
+              {selectedImage && (
                 <button
                   type="button"
                   className="remove-profile-image"
@@ -219,12 +355,12 @@ function EditProfile() {
 
                 <input
                   type="text"
-                  value={profile.name}
+                  value={formData.name}
                   placeholder="Enter your full name"
                   onChange={(event) =>
                     updateProfile("name", event.target.value)
                   }
-                  required
+                  
                 />
               </div>
             </label>
@@ -237,12 +373,8 @@ function EditProfile() {
 
                 <input
                   type="email"
-                  value={profile.email}
-                  placeholder="Enter your email address"
-                  onChange={(event) =>
-                    updateProfile("email", event.target.value)
-                  }
-                  required
+                  value={formData.email}
+                  readOnly
                 />
               </div>
             </label>
@@ -255,7 +387,7 @@ function EditProfile() {
 
                 <input
                   type="tel"
-                  value={profile.phone}
+                  value={formData.phone}
                   placeholder="Enter your phone number"
                   onChange={(event) =>
                     updateProfile("phone", event.target.value)
@@ -272,7 +404,7 @@ function EditProfile() {
 
                 <input
                   type="text"
-                  value={profile.location}
+                  value={formData.location}
                   placeholder="Enter your location"
                   onChange={(event) =>
                     updateProfile("location", event.target.value)
@@ -298,6 +430,7 @@ function EditProfile() {
               type="button"
               className="cancel-profile-button"
               onClick={() => navigate("/profile")}
+              disabled={saving}
             >
               Cancel
             </button>
@@ -305,8 +438,9 @@ function EditProfile() {
             <button
               type="submit"
               className="save-profile-button"
+              disabled={saving}
             >
-              Save Changes
+               {saving ? "Saving..." : "Save Changes"}
             </button>
           </div>
         </form>
