@@ -513,7 +513,7 @@ function NewTransaction() {
                         Expense
                       </option>
 
-                      <option value="income">
+                      <option value="Income">
                         Income
                       </option>
                     </select>
